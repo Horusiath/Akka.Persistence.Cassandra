@@ -1,7 +1,15 @@
-﻿using System;
+﻿#region copyrigth
+//-----------------------------------------------------------------------
+// <copyright file="ConfigSessionProvider.cs" company="Akka.NET Project">
+//     Copyright (C) 2009-2018 Lightbend Inc. <http://www.lightbend.com>
+//     Copyright (C) 2013-2018 .NET Foundation <https://github.com/akkadotnet/akka.net>
+// </copyright>
+//-----------------------------------------------------------------------
+#endregion
+
+using System;
 using System.Collections.Generic;
 using System.Net;
-using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Akka.Actor;
@@ -41,11 +49,7 @@ namespace Akka.Persistence.Cassandra
             switch (config.GetString("protocol-version"))
             {
                 case null: case "": ProtocolVersion = null; break;
-                case "1": ProtocolVersion = global::Cassandra.ProtocolVersion.V1; break;
-                case "2": ProtocolVersion = global::Cassandra.ProtocolVersion.V2; break;
-                case "3": ProtocolVersion = global::Cassandra.ProtocolVersion.V3; break;
-                case "4": ProtocolVersion = global::Cassandra.ProtocolVersion.V4; break;
-                case "5": ProtocolVersion = global::Cassandra.ProtocolVersion.V5; break;
+                case var s: ProtocolVersion = (ProtocolVersion) int.Parse(s); break;
             }
 
             ConnectionPoolConfig = config.GetConfig("connection-pool");
@@ -87,7 +91,7 @@ namespace Akka.Persistence.Cassandra
         /// configuration.
         /// </summary>
         /// <param name="clusterId">The configured `cluster-id` to lookup</param>
-        public async Task<IEnumerable<IPEndPoint>> LookupContactPoints(string clusterId)
+        public virtual async Task<IEnumerable<IPEndPoint>> LookupContactPoints(string clusterId)
         {
             var contactPoints = config.GetStringList("contact-points");
             return BuildContactPoints(contactPoints, Port);
@@ -102,7 +106,7 @@ namespace Akka.Persistence.Cassandra
             return await cluster.ConnectAsync();
         }
         
-        protected async Task<Builder> ClusterBuilder(string clusterId)
+        protected virtual async Task<Builder> ClusterBuilder(string clusterId)
         {
             var addresses = await LookupContactPoints(clusterId);
 
@@ -163,10 +167,10 @@ namespace Akka.Persistence.Cassandra
         /// <summary>
         /// Builds list of IP addresses out of host:port pairs or host entries + given port parameter.
         /// </summary>
-        protected IEnumerable<IPEndPoint> BuildContactPoints(IList<string> contactPoints, int port)
+        protected virtual IEnumerable<IPEndPoint> BuildContactPoints(IList<string> contactPoints, int port)
         {
             if (contactPoints == null || contactPoints.Count == 0)
-                throw new ArgumentException("A contact point list cannot be empty.", nameof(contactPoints));
+                throw new ArgumentException("A contact point list cannot be empty. You can set cassandra contact points using `cassandra-journal.contact-points` or `cassandra-snapshot-store.contact-points` HOCON settings.", nameof(contactPoints));
 
             foreach (var contactPoint in contactPoints)
             {

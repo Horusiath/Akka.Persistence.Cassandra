@@ -1,4 +1,13 @@
-﻿using Akka.Persistence.Cassandra.Journal;
+﻿#region copyrigth
+//-----------------------------------------------------------------------
+// <copyright file="CassandraReadJournal.cs" company="Akka.NET Project">
+//     Copyright (C) 2009-2018 Lightbend Inc. <http://www.lightbend.com>
+//     Copyright (C) 2013-2018 .NET Foundation <https://github.com/akkadotnet/akka.net>
+// </copyright>
+//-----------------------------------------------------------------------
+#endregion
+
+using Akka.Persistence.Cassandra.Journal;
 using Akka.Persistence.Query;
 using Akka.Streams.Dsl;
 

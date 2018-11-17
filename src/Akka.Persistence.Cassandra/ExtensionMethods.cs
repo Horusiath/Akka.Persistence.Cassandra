@@ -1,4 +1,13 @@
-﻿using System;
+﻿#region copyrigth
+//-----------------------------------------------------------------------
+// <copyright file="ExtensionMethods.cs" company="Akka.NET Project">
+//     Copyright (C) 2009-2018 Lightbend Inc. <http://www.lightbend.com>
+//     Copyright (C) 2013-2018 .NET Foundation <https://github.com/akkadotnet/akka.net>
+// </copyright>
+//-----------------------------------------------------------------------
+#endregion
+
+using System;
 using Akka.Actor;
 using Cassandra;
 
@@ -19,14 +28,6 @@ namespace Akka.Persistence.Cassandra
                 throw new InvalidOperationException("Persistence extension not found.");
 
             return ext;
-        }
-
-        /// <summary>
-        /// Converts a Type to a string representation that can be stored in Cassandra.
-        /// </summary>
-        internal static string ToQualifiedString(this Type t)
-        {
-            return string.Format("{0}, {1}", t.FullName, t.Assembly.GetName().Name);
         }
 
         /// <summary>
